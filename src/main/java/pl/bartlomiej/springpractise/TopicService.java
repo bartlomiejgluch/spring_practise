@@ -1,6 +1,7 @@
 package pl.bartlomiej.springpractise;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,37 +11,31 @@ import java.util.List;
 @Service
 public class TopicService {
 
-    List<Topic> topics = new ArrayList<>( Arrays.asList(
-            new Topic("spring", "Spring Frame", "Spring Framework Description"),
-            new Topic("2", "2 name", "2 Description"),
-            new Topic("3", "3 Frame", "3 Description")));
+    @Autowired
+    private TopicRepository topicRepository;
+
 
     public List<Topic> getAllTopics() {
+        List<Topic> topics = new ArrayList<>();
+        topicRepository.findAll().forEach(topics::add);
         return topics;
     }
 
-    public Topic getTopic(String id){
-
-        return topics.stream().filter(t->t.getId().equals(id)).findFirst().get();
+    public Topic getTopic(String id) {
+        return topicRepository.findOne(id);
     }
 
     public void addTopic(Topic topic) {
-        topics.add(topic);
+        topicRepository.save(topic);
     }
 
     public void updateTopic(String id, Topic topic) {
-        for (int i = 0; i < topics.size(); i++) {
+        topicRepository.save(topic);
 
-            Topic t = topics.get(i);
-            if (t.getId().equals(id)){
-                topics.set(i, topic);
-                return;
-            }
-        }
     }
 
     public void deleteTopic(String id) {
 
-        topics.removeIf(t -> t.getId().equals(id));
+        topicRepository.delete(id);
     }
 }
